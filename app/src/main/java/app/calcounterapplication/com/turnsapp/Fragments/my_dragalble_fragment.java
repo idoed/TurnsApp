@@ -122,7 +122,7 @@ public class my_dragalble_fragment extends Fragment {
     public void setupListRecyclerView() {
         mDragListView.setLayoutManager(new LinearLayoutManager(getContext()));
         ItemDragListAdapter listAdapter = new ItemDragListAdapter(mPeopleArray,
-                R.layout.drag_exmpl, R.id.profileButtPic, false,pickDateOption,getContext());
+                R.layout.drag_exmpl, R.id.image, false,pickDateOption,getContext());
         mDragListView.setAdapter(listAdapter, true);
         mDragListView.setCanDragHorizontally(false);
         mDragListView.setCustomDragItem(new MyDragItem(getContext(), R.layout.drag_exmpl));

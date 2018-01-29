@@ -2,7 +2,6 @@ package app.calcounterapplication.com.turnsapp.Adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.provider.MediaStore;
 import android.support.v4.util.Pair;
@@ -15,18 +14,14 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.woxthebox.draglistview.DragItemAdapter;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
+import app.calcounterapplication.com.turnsapp.ImageManager.ImageManager;
 import app.calcounterapplication.com.turnsapp.R;
 
 import static app.calcounterapplication.com.turnsapp.Fragments.my_dragalble_fragment.mCheckedArray;
@@ -44,7 +39,6 @@ public class ItemDragListAdapter extends DragItemAdapter<Pair<Long, String>, Ite
 
     private int mLayoutId;
     private int mGrabHandleId;
-
     boolean mPickDateOption = false;
 
 
@@ -58,7 +52,7 @@ public class ItemDragListAdapter extends DragItemAdapter<Pair<Long, String>, Ite
         super(dragOnLongPress);
         mLayoutId = layoutId;
         mGrabHandleId = grabHandleId;
-        mPickDateOption = pickDateOption;
+
         mContext = context;
         setHasStableIds(true);
         setItemList(list);
