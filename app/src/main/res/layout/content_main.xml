@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/myrelative"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingTop="20dp"
+    tools:context="app.calcounterapplication.com.turnsapp.UI.MainActivity"
+    tools:showIn="@layout/activity_main">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Who's Turn is it?"
+        android:textSize="30sp"
+        android:paddingTop="20dp"
+        android:id="@+id/startingText"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="46dp" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose Game"
+        android:layout_below="@+id/startingText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="27dp"
+        android:id="@+id/DialogBut"/>
+    <LinearLayout
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:orientation="vertical"
+        android:layout_below="@+id/DialogBut"
+        android:layout_marginTop="15dp"
+        android:id="@+id/chooselinear"
+        >
+
+<RadioGroup
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/RadioGroup"
+    android:orientation="horizontal"
+    android:layout_gravity="center_horizontal">
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:text="@string/dbz"
+        android:id="@+id/dbzradi"
+        />
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/rocket"
+        android:layout_marginLeft="30dp"
+        android:id="@+id/rocketradio"/>
+
+
+</RadioGroup>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Number Of players(2-8)"
+            android:layout_marginTop="25dp"
+            android:layout_gravity="center_horizontal"
+            />
+        <EditText
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:id="@+id/numberofPlayers"
+            android:textAlignment="center"
+            android:inputType="number"/>
+
+
+        <Button
+            android:id="@+id/navigation_next_button"
+            android:layout_marginTop="27dp"
+            android:text="Next"
+            android:textSize="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#4682B4"
+            android:background="@android:color/transparent"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="end"
+            />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:id="@+id/mylinearback"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"></LinearLayout>
+
+</android.widget.RelativeLayout>

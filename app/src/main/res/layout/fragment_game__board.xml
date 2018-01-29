@@ -1,0 +1,101 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+android:orientation="vertical"
+    tools:context="app.calcounterapplication.com.turnsapp.Fragments.Game_Board"
+    android:padding="20dp"
+    >
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:layout_marginLeft="20dp"
+        android:id="@+id/textplayer8"
+        android:layout_marginTop="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Player 8"
+        />
+
+    <TextView
+        android:layout_marginLeft="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Player 7"
+        android:layout_marginTop="20dp"
+        android:id="@+id/textPlayer7">
+
+    </TextView>
+
+
+    <TextView
+        android:layout_marginLeft="20dp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:id="@+id/textPlayer6"
+        android:text="Player 6"
+        android:layout_marginTop="20dp"/>
+    <TextView
+        android:layout_marginLeft="20dp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:id="@+id/textPlayer5"
+        android:text="Player 5"
+        android:layout_marginTop="20dp"/>
+    <TextView
+        android:layout_marginLeft="20dp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:id="@+id/textPlayer4"
+        android:text="Player 4"
+        android:layout_marginTop="20dp"/>
+    <TextView
+        android:layout_marginLeft="20dp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:id="@+id/textPlayer3"
+        android:text="Player 3"
+        android:layout_marginTop="20dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:orientation="horizontal"
+        android:id="@+id/Playinglinearlayout"
+        android:padding="30dp">
+
+        <TextView
+            android:id="@+id/textPlayer2"
+            android:layout_marginTop="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Player 2"
+            android:textSize="25sp"/>
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/vspic"
+            />
+        <TextView
+            android:id="@+id/textPlayer1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:textSize="25sp"
+            android:text="Player 1"
+            android:layout_marginLeft="20dp"/>
+
+
+    </LinearLayout>
+    <TextView
+        android:layout_gravity="start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Leader:"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Score :"/>
+
+</LinearLayout>
