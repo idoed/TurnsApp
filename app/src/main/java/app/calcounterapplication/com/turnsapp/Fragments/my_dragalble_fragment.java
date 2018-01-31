@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,28 +23,34 @@ import java.util.Date;
 import java.util.List;
 
 import app.calcounterapplication.com.turnsapp.Adapters.ItemDragListAdapter;
+import app.calcounterapplication.com.turnsapp.Adapters.OnActivityResult;
 import app.calcounterapplication.com.turnsapp.Model.Game;
 import app.calcounterapplication.com.turnsapp.Model.Player;
 import app.calcounterapplication.com.turnsapp.R;
 import app.calcounterapplication.com.turnsapp.UI.GameActivity;
 
+import static android.R.attr.factor;
 import static android.R.attr.name;
 
 
-public class my_dragalble_fragment extends Fragment {
+public class my_dragalble_fragment extends Fragment   {
     private Game game;
 
     //Array for people names with id's for the draggable list
     public static ArrayList<Pair<Long, String>> mPeopleArray;
+    public static ArrayList<Player> PlayerList;
 
     //Array for checkbox
     public static ArrayList<Boolean> mCheckedArray;
-
+    public ItemDragListAdapter itemDragListAdapter;
 
     private DragListView mDragListView;
     private boolean pickDateOption;
-    private int id1,numofP1;
-    String gamename1;
+    public ImageButton ProfileBut;
+public  int numOfPlayers;
+
+
+
 
 
     View view;
@@ -60,23 +67,31 @@ public class my_dragalble_fragment extends Fragment {
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+        Log.v("if we are here its working", "Yeah");
+            itemDragListAdapter.onActivityResult(requestCode,resultCode,data);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
 //Passing the game info Including number of players,Game Name and Id
         Intent gameintent = getActivity().getIntent();
         game=(Game)gameintent.getParcelableExtra("Game");
-        int numOfP=game.getNumofplayers();
+         numOfPlayers=game.getNumofplayers();
 
-
-
+//        context=getActivity();
+//        itemDragListAdapter.setContext(context);
 
 
         // Inflate the layout for this fragment
 
         view =  inflater.inflate(R.layout.fragment_my_dragalble_fragment, container, false);
         try {
-            mDragListView = (DragListView) view.findViewById(R.id.drag_list_view_first_call);
+
+                    mDragListView = (DragListView) view.findViewById(R.id.drag_list_view_first_call);
             mDragListView.getRecyclerView().setVerticalScrollBarEnabled(true);
         } catch (NullPointerException e) {
             e.printStackTrace();
@@ -99,7 +114,7 @@ public class my_dragalble_fragment extends Fragment {
 
         mPeopleArray = new ArrayList<>();
         mCheckedArray = new ArrayList<>();
-        for (int i = 0; i < numOfP; i++) {
+        for (int i = 0; i < numOfPlayers; i++) {
             try {
                 mPeopleArray.add(new Pair<>(Long.valueOf(i), "Player " + i));
             } catch (NullPointerException e) {
@@ -109,6 +124,7 @@ public class my_dragalble_fragment extends Fragment {
 
         }
         setupListRecyclerView();
+
 
         return view;
     }
@@ -122,10 +138,11 @@ public class my_dragalble_fragment extends Fragment {
     public void setupListRecyclerView() {
         mDragListView.setLayoutManager(new LinearLayoutManager(getContext()));
         ItemDragListAdapter listAdapter = new ItemDragListAdapter(mPeopleArray,
-                R.layout.drag_exmpl, R.id.image, false,pickDateOption,getContext());
+                R.layout.drag_exmpl, R.id.image, false,pickDateOption,getContext(),my_dragalble_fragment.this);
         mDragListView.setAdapter(listAdapter, true);
         mDragListView.setCanDragHorizontally(false);
         mDragListView.setCustomDragItem(new MyDragItem(getContext(), R.layout.drag_exmpl));
+
     }
 
 
@@ -143,10 +160,38 @@ public class my_dragalble_fragment extends Fragment {
             dragView.setBackgroundColor(dragView.getResources().getColor(R.color.drag_color));
         }
     }
-    public void SetPlayersDetails(Player player){
-        player.setPlayerid(0);
-        player.setPlayername(mPeopleArray.toString());
+    //
 
+
+    /**
+     * Chacking if all chackboxes are ok, if yes Creating List OfPlayers.
+     */
+    public boolean ChackIfGameSet(){
+        boolean Chacker=true;
+        ProfileBut=(ImageButton)view.findViewById(R.id.profileButtPic);
+        for (int i=0; i<numOfPlayers;i++){
+            if(mCheckedArray.get(i)==false){
+                i=numOfPlayers;
+                PlayerList.clear();
+                Chacker=false;
+            }else{
+                String PersonName=mPeopleArray.get(i).toString();
+                // TODO: 30/01/2018  need to see how can i get path for each Image;
+                Player player=new Player(i,PersonName,0);
+                PlayerList.add(player);
+
+
+            }
+        }return Chacker;
+    }
+
+    /**
+     * taking the List and send it to The Activity
+     *
+     * @return
+     */
+    public ArrayList<Player> CallingPlayerList(){
+        return PlayerList;
     }
 
 

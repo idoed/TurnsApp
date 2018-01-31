@@ -45,12 +45,12 @@
 
     <!-- empty view to fill space from text to the end (delete button)-->
 
-    <Button
+    <ImageButton
         android:layout_marginLeft="15dp"
-        android:layout_width="80dp"
-        android:layout_height="50dp"
-        android:src="@drawable/bg_circle_pic"
-        android:background="@drawable/profile"
+        android:layout_width="90dp"
+        android:layout_height="60dp"
+        android:src="@drawable/profile"
+        android:background="@drawable/bg_circle_pic"
         android:id="@+id/profileButtPic"
         />
     <TextView

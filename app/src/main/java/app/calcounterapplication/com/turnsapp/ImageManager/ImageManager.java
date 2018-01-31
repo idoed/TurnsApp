@@ -1,5 +1,8 @@
 package app.calcounterapplication.com.turnsapp.ImageManager;
 
+import android.media.Image;
+import android.provider.ContactsContract;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -15,22 +18,35 @@ public class ImageManager {
         return me;
     }
 
+    /**
+     * getting Id from the user in 3rd stage/or after receiving database
+     *
+     * @param userId
+     * @return
+     */
     public File getImageOfUser(int userId) {
-        File userImage;
-        if (isImageExist(userId)){
-            userImage = getImageForExistingUser();
-        }else{
-            userImage = getNewImageForUser(userId);
-        }
+        File userImage=null;
+
 
         return userImage;
+    }
+    //TODO: need to chack if the user is not exists.
+
+    public void SaveImageToDb(File ImagePath,int userid){
+        ImageObj image= new ImageObj(ImagePath,userid );
+            imageList.add(image);
+    }
+    public File getImageFromNewUser(){
+        File ImagePath = null;
+
+        return ImagePath;
     }
 
     private File getImageForExistingUser() {
         return null;
     }
 
-    private File getNewImageForUser(int userId) {
+    private File getNewImageForUser() {
         return null;
     }
 
