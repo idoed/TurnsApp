@@ -2,7 +2,8 @@ package app.calcounterapplication.com.turnsapp.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.Pair;
@@ -13,49 +14,40 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.woxthebox.draglistview.DragItem;
 import com.woxthebox.draglistview.DragListView;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import app.calcounterapplication.com.turnsapp.Adapters.ItemDragListAdapter;
-import app.calcounterapplication.com.turnsapp.Adapters.OnActivityResult;
 import app.calcounterapplication.com.turnsapp.Model.Game;
 import app.calcounterapplication.com.turnsapp.Model.Player;
 import app.calcounterapplication.com.turnsapp.R;
-import app.calcounterapplication.com.turnsapp.UI.GameActivity;
+import de.hdodenhof.circleimageview.CircleImageView;
 
-import static android.R.attr.factor;
-import static android.R.attr.name;
-
-
-public class my_dragalble_fragment extends Fragment   {
+public class my_dragalble_fragment extends Fragment  {
     private Game game;
-
+MovingToGameListener movingToGameListener;
     //Array for people names with id's for the draggable list
     public static ArrayList<Pair<Long, String>> mPeopleArray;
     public static ArrayList<Player> PlayerList;
-
+    //Array for Photos with id
+    public static ArrayList<Pair<Long, Bitmap>> mPhotosList;
     //Array for checkbox
     public static ArrayList<Boolean> mCheckedArray;
-    public ItemDragListAdapter itemDragListAdapter;
+
+    public static ItemDragListAdapter itemDragListAdapter;
 
     private DragListView mDragListView;
-    private boolean pickDateOption;
+    private static boolean pickDateOption;
     public ImageButton ProfileBut;
 public  int numOfPlayers;
-
-
-
-
-
+    public Bitmap userPhoto;
     View view;
     public my_dragalble_fragment() {
     }
+
 
 
     @Override
@@ -81,9 +73,9 @@ public  int numOfPlayers;
         Intent gameintent = getActivity().getIntent();
         game=(Game)gameintent.getParcelableExtra("Game");
          numOfPlayers=game.getNumofplayers();
+        Bitmap icon= BitmapFactory.decodeResource(getResources(),
+                R.drawable.profile);
 
-//        context=getActivity();
-//        itemDragListAdapter.setContext(context);
 
 
         // Inflate the layout for this fragment
@@ -111,11 +103,13 @@ public  int numOfPlayers;
         });
 
         //TODO: take from database
-
+        mPhotosList=new ArrayList<>();
         mPeopleArray = new ArrayList<>();
         mCheckedArray = new ArrayList<>();
+
         for (int i = 0; i < numOfPlayers; i++) {
             try {
+                mPhotosList.add(new Pair<Long, Bitmap>(Long.valueOf(i),icon));
                 mPeopleArray.add(new Pair<>(Long.valueOf(i), "Player " + i));
             } catch (NullPointerException e) {
                 e.printStackTrace();
@@ -123,8 +117,8 @@ public  int numOfPlayers;
             mCheckedArray.add(false);
 
         }
-        setupListRecyclerView();
 
+        setupListRecyclerView();
 
         return view;
     }
@@ -135,18 +129,19 @@ public  int numOfPlayers;
         super.onDestroyView();
     }
 
+
     public void setupListRecyclerView() {
         mDragListView.setLayoutManager(new LinearLayoutManager(getContext()));
         ItemDragListAdapter listAdapter = new ItemDragListAdapter(mPeopleArray,
-                R.layout.drag_exmpl, R.id.image, false,pickDateOption,getContext(),my_dragalble_fragment.this);
+                R.layout.drag_exmpl, R.id.image, false,pickDateOption,getContext(),mPhotosList);
         mDragListView.setAdapter(listAdapter, true);
         mDragListView.setCanDragHorizontally(false);
         mDragListView.setCustomDragItem(new MyDragItem(getContext(), R.layout.drag_exmpl));
+        itemDragListAdapter=listAdapter;
+
+
 
     }
-
-
-
     private static class MyDragItem extends DragItem {
 
         public MyDragItem(Context context, int layoutId) {
@@ -158,9 +153,10 @@ public  int numOfPlayers;
             CharSequence text = ((TextView) clickedView.findViewById(R.id.enterName)).getText();
             ((TextView) dragView.findViewById(R.id.enterName)).setText(text);
             dragView.setBackgroundColor(dragView.getResources().getColor(R.color.drag_color));
+             CircleImageView myImage= (CircleImageView)dragView.findViewById(R.id.profileButtPic);
         }
     }
-    //
+
 
 
     /**
@@ -176,12 +172,17 @@ public  int numOfPlayers;
                 Chacker=false;
             }else{
                 String PersonName=mPeopleArray.get(i).toString();
-                // TODO: 30/01/2018  need to see how can i get path for each Image;
-                Player player=new Player(i,PersonName,0);
+               //Comparing the index and add Photo for Each player.
+                for( Pair temp :mPhotosList) {
+                    if (((Long) temp.first).intValue() == i) {
+                        userPhoto = (Bitmap) temp.second;
+                    }
+                }
+                Player player=new Player(i,PersonName,0,userPhoto);
                 PlayerList.add(player);
 
-
             }
+            movingToGameListener.CallingPlayerList(PlayerList);
         }return Chacker;
     }
 
@@ -190,10 +191,37 @@ public  int numOfPlayers;
      *
      * @return
      */
-    public ArrayList<Player> CallingPlayerList(){
-        return PlayerList;
+
+    /**
+     * this is a callback Methood, the Activity Passing the data to this methood and from here stright to adapter.
+     *
+      * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    public static void PassingToAdapter(int requestCode, int resultCode, Intent data){
+//        Log.v("requestCode="+requestCode+"  resultcode="+resultCode,"Dam Right");
+        itemDragListAdapter.onActivityResult( requestCode, resultCode,  data);
+
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            movingToGameListener = (MovingToGameListener)context;
+        }
+        catch (Exception ex ){
+
+        }
+    }
+
+    public interface MovingToGameListener
+    {
+        public void CallingPlayerList(ArrayList<Player> list);
+//        public void ChackIfGameSet(ArrayList<Pair<Long, Bitmap>> ph)
+    }
 
 }
 

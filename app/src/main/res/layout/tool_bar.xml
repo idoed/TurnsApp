@@ -9,10 +9,10 @@
     >
 
     <ImageView
-        android:layout_width="40dp"
-        android:layout_height="50dp"
+        android:layout_width="50dp"
+        android:layout_height="60dp"
         android:layout_marginRight="10dp"
-        android:src="@drawable/turnsapp_logo"
+        android:src="@drawable/turnsapp_logo1"
 
         />
 

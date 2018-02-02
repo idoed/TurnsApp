@@ -7,24 +7,20 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.Pair;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.woxthebox.draglistview.DragItemAdapter;
@@ -35,37 +31,31 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import app.calcounterapplication.com.turnsapp.Fragments.my_dragalble_fragment;
-import app.calcounterapplication.com.turnsapp.ImageManager.ImageManager;
 import app.calcounterapplication.com.turnsapp.R;
-import app.calcounterapplication.com.turnsapp.UI.GameActivity;
-import app.calcounterapplication.com.turnsapp.UI.MainActivity;
+import de.hdodenhof.circleimageview.CircleImageView;
 
-import static android.R.attr.data;
 import static android.app.Activity.RESULT_OK;
 import static app.calcounterapplication.com.turnsapp.Fragments.my_dragalble_fragment.mCheckedArray;
 import static app.calcounterapplication.com.turnsapp.Fragments.my_dragalble_fragment.mPeopleArray;
-import static app.calcounterapplication.com.turnsapp.UI.GameActivity.IMAGE_GALLARY_REQUEST;
-import static java.security.AccessController.getContext;
+import static app.calcounterapplication.com.turnsapp.Fragments.my_dragalble_fragment.mPhotosList;
 
 public class ItemDragListAdapter extends DragItemAdapter<Pair<Long, String>, ItemDragListAdapter.ViewHolder> implements OnActivityResult{
+
     public Fragment myContext;
 
     int ClassCount = 0;
     static int StaticClassCount = 0;
-    public ImageButton myImage;
+//    public ImageButton myImage;
     public my_dragalble_fragment myDrag=new my_dragalble_fragment();
-    public Context bcontex;
+
     public static final int IMAGE_GALLARY_REQUEST = 20,REQUEST_CAMERA=1;;
     private int mLayoutId;
     private int mGrabHandleId;
     boolean mPickDateOption = false;
-
-
-
+    public CircleImageView myImage;
     private AlertDialog theDialog;
     Context mContext;
-
-
+public static int PositionOfPicture;
 
     public interface CallbackInterface{
 
@@ -78,11 +68,10 @@ public class ItemDragListAdapter extends DragItemAdapter<Pair<Long, String>, Ite
 
     //Constructor
     public ItemDragListAdapter(ArrayList<Pair<Long, String>> list, int layoutId,
-                               int grabHandleId, boolean dragOnLongPress, boolean pickDateOption, Context context,Fragment mySecondContext) {
+                               int grabHandleId, boolean dragOnLongPress, boolean pickDateOption, Context context,ArrayList<Pair<Long,Bitmap>> photolist) {
         super(dragOnLongPress);
         mLayoutId = layoutId;
         mGrabHandleId = grabHandleId;
-        myContext=mySecondContext;
 
         mContext = context;
         setHasStableIds(true);
@@ -90,7 +79,15 @@ public class ItemDragListAdapter extends DragItemAdapter<Pair<Long, String>, Ite
 
 
     }
+    public void ItemDragListAdapter1(ArrayList<Pair<Long, String>> list, int layoutId,
+                               int grabHandleId, boolean pickDateOption, Context context) {
+        mLayoutId = layoutId;
+        mGrabHandleId = grabHandleId;
+        mContext = context;
+        setHasStableIds(true);
+        setItemList(list);
 
+    }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(mLayoutId, parent, false);
@@ -102,13 +99,15 @@ public class ItemDragListAdapter extends DragItemAdapter<Pair<Long, String>, Ite
     public void onBindViewHolder(ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
         String text = mItemList.get(position).second;
+        Bitmap myBitmap=mPhotosList.get(position).second;
+
         ClassCount++;
         StaticClassCount++;
 
         if(holder.mCheckBox.isChecked()){
             Log.wtf("here", "count: " +ClassCount+ "  position:  " + position );
         }
-
+        holder.myImage.setImageBitmap(myBitmap);
         holder.mEditText.setText(text);
         holder.itemView.setTag(text);
 
@@ -129,6 +128,7 @@ public class ItemDragListAdapter extends DragItemAdapter<Pair<Long, String>, Ite
         public EditText mEditText;
         public String mText;
         public String mOldText;
+        public CircleImageView myImage;
 
         //
 
@@ -141,7 +141,7 @@ public class ItemDragListAdapter extends DragItemAdapter<Pair<Long, String>, Ite
 
             mEditText = (EditText) itemView.findViewById(R.id.enterName);
             mText = mEditText.getText().toString();
-            myImage=(ImageButton) itemView.findViewById(R.id.profileButtPic);
+            myImage=(CircleImageView) itemView.findViewById(R.id.profileButtPic);
             mDeleteImageButton = (ImageButton) itemView.findViewById(R.id.delete_draggable_item);
             mCheckBox = (CheckBox) itemView.findViewById(R.id.checkbox_draggable_list_item);
 
@@ -166,6 +166,8 @@ public class ItemDragListAdapter extends DragItemAdapter<Pair<Long, String>, Ite
             myImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    int TheImagePosition=getAdapterPosition();
+                    PositionOfPicture=TheImagePosition;
                     dialog = new android.support.v7.app.AlertDialog.Builder((Activity) view.getContext());
                     dialog.setTitle("Upload Photo");
                     dialog.setMessage("Choose Between 2 Options");
@@ -177,9 +179,8 @@ public class ItemDragListAdapter extends DragItemAdapter<Pair<Long, String>, Ite
                         public void onClick(DialogInterface dialogInterface, int i) {
                             //Changing each picture to User Pic;
                     Intent intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            ((Activity)mContext).startActivityForResult(intent,REQUEST_CAMERA);
 
-                            myContext.startActivityForResult(intent,REQUEST_CAMERA);
-//                    onActivityResult(RESULT_OK,REQUEST_CAMERA,intent);
                         }
                     });
                     //Set The Existing Photo Option
@@ -187,21 +188,17 @@ public class ItemDragListAdapter extends DragItemAdapter<Pair<Long, String>, Ite
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
 
-                            Intent intent=new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            Intent intent=new Intent(Intent.ACTION_PICK);
                             //*Where do we want to find the data?
                             File pictureDerectory= Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
                             String path=pictureDerectory.getPath();
                             //Finaly get URI representation=
-                            Uri data=Uri.parse(path);
+                            Uri data1=Uri.parse(path);
                             //set the Data and type
-                            intent.setDataAndType(data,"image/*");
+                            intent.setDataAndType(data1,"image/*");
                             //WE WILL invoke that activity and get somthing from it.
 
-                            myContext.startActivityForResult(intent,IMAGE_GALLARY_REQUEST);
-
-
-
-
+                            ((Activity)mContext).startActivityForResult(intent,IMAGE_GALLARY_REQUEST);
 
                         }
                     });
@@ -241,7 +238,6 @@ public class ItemDragListAdapter extends DragItemAdapter<Pair<Long, String>, Ite
                             }
                             i++;
                         }
-
                         //If long id was found set the data in the array.
                         if (mTempLong != -1) {
                            mPeopleArray.set(i, Pair.create(mTempLong, mText));
@@ -249,7 +245,6 @@ public class ItemDragListAdapter extends DragItemAdapter<Pair<Long, String>, Ite
                     }
                 }
             });
-
             //CheckBox change listener
             mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -286,17 +281,10 @@ public class ItemDragListAdapter extends DragItemAdapter<Pair<Long, String>, Ite
                         mCheckedArray.set(i, isChecked);
                     }
 
-
-
                 }
             });
         }
-
-
-
-
         }
-
         //List item is clicked listener
 
         public void onItemClicked(View view) {
@@ -310,7 +298,8 @@ public class ItemDragListAdapter extends DragItemAdapter<Pair<Long, String>, Ite
         }
     @Override
     public void onActivityResult(int requestCode, int ResultCode, Intent data) {
-        Log.v("yea"+ResultCode,"sfa");
+
+        Log.v("requestCode="+requestCode+"  resultcode="+ResultCode+"and my if is"+RESULT_OK,"Dam Right");
         if(ResultCode==RESULT_OK){
             //if we are here everything processed successfully;
             if(requestCode==IMAGE_GALLARY_REQUEST){
@@ -319,11 +308,26 @@ public class ItemDragListAdapter extends DragItemAdapter<Pair<Long, String>, Ite
                 Uri imageUri=data.getData();
                 //the address of the image on the sd
                 InputStream inputStream ;
+
                 try{
                     inputStream=mContext.getContentResolver().openInputStream(imageUri);
                     Bitmap image = BitmapFactory.decodeStream(inputStream);
-                    myImage.setImageBitmap(image);
-
+                    Bitmap myBitmap=image;
+                    int i = 0;
+                    Long mTempLong = -1l;
+                    for (Pair temp :mPhotosList){
+                        if (((Long) temp.first).intValue() ==  PositionOfPicture){
+                            mTempLong = (Long) temp.first;
+//                            myImage.setImageBitmap(myBitmap);
+                            break;
+                        }
+                        i++;
+                    }
+                    if (mTempLong != -1) {
+                        mPhotosList.set(i, Pair.create(mTempLong, myBitmap));
+                        notifyDataSetChanged();
+                    }
+                    Toast.makeText(mContext, "Position of picture in Int"+PositionOfPicture+" and position in mTempLong "+mTempLong, Toast.LENGTH_SHORT).show();
                 }
                 catch (FileNotFoundException e){
                     e.printStackTrace();
@@ -340,5 +344,4 @@ public class ItemDragListAdapter extends DragItemAdapter<Pair<Long, String>, Ite
 
         }
     }
-
 }

@@ -1,5 +1,7 @@
 package app.calcounterapplication.com.turnsapp.Model;
 
+import android.graphics.Bitmap;
+
 import java.io.File;
 
 /**
@@ -10,7 +12,7 @@ public class Player {
     private int playerid;
     private String playername;
     private int Wins;
-    private File ImagePath;
+    private Bitmap Image;
 
     public Player(String name) {
     }
@@ -40,11 +42,12 @@ public class Player {
         Wins = wins;
     }
 
-    public Player(int playerid, String playername,int NumberOfwins) {
+    public Player(int playerid, String playername, int NumberOfwins, Bitmap userPhoto) {
         this.playerid = playerid;
         this.playername = playername;
         //meanwhile  its not gonna happen
 //        this.ImagePath=ImagePath;
-        this.Wins=NumberOfwins;
+        this.Wins = NumberOfwins;
+        this.Image = userPhoto;
     }
 }
