@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.IdRes;
@@ -17,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -48,19 +50,17 @@ private RadioGroup gameGroup;
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        GameBut=(Button)findViewById(R.id.DialogBut);
-        linearLayout=(LinearLayout)findViewById(R.id.chooselinear);
-        dbzBut=(RadioButton)findViewById(R.id.dbzradi);
-        rocketBut=(RadioButton)findViewById(R.id.rocketradio);
-        dragonMedia=MediaPlayer.create(getApplicationContext() ,R.raw.dbs);
-        rocketMedia=MediaPlayer.create(getApplicationContext() ,R.raw.rocketmed);
-        gameGroup=(RadioGroup)findViewById(R.id.RadioGroup);
-        linearbackground=(LinearLayout) findViewById(R.id.mylinearback);
-        localMedia=dragonMedia;
-        nextBut=(Button)findViewById(R.id.navigation_next_button);
-        numofplayerText=(EditText)findViewById(R.id.numberofPlayers) ;
-
-
+        GameBut = (Button) findViewById(R.id.DialogBut);
+        linearLayout = (LinearLayout) findViewById(R.id.chooselinear);
+        dbzBut = (RadioButton) findViewById(R.id.dbzradi);
+        rocketBut = (RadioButton) findViewById(R.id.rocketradio);
+        dragonMedia = MediaPlayer.create(getApplicationContext(), R.raw.dbs);
+        rocketMedia = MediaPlayer.create(getApplicationContext(), R.raw.rocketmed);
+        gameGroup = (RadioGroup) findViewById(R.id.RadioGroup);
+        linearbackground = (LinearLayout) findViewById(R.id.mylinearback);
+        localMedia = dragonMedia;
+        nextBut = (Button) findViewById(R.id.navigation_next_button);
+        numofplayerText = (EditText) findViewById(R.id.numberofPlayers);
 
 
         //make the game options visible for the user.
@@ -72,63 +72,91 @@ private RadioGroup gameGroup;
             }
         });
         //Changing the song while swich the radio button
-gameGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-    @Override
-    public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
-        RadioButton radioButton=(RadioButton) findViewById(i);
-        if(radioButton.getText().equals("Dragon Ball")){
-            if(localMedia.isPlaying()) {
-                localMedia.stop();
-            }
-            localMedia=dragonMedia;
-            linearbackground.setBackgroundResource(R.drawable.dbz);
+        gameGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
+                RadioButton radioButton = (RadioButton) findViewById(i);
+                String RadioButtonTXT = radioButton.getText().toString();
+                if (radioButton.getText().equals("Dragon Ball")) {
+                    if (localMedia.isPlaying()) {
+                        localMedia.stop();
+                    }
+                    localMedia = dragonMedia;
+                    linearbackground.setBackgroundResource(R.drawable.dbz);
 
 //Chack if its rocket league and also change the background
-        }else if(radioButton.getText().equals("Rocket League")){
-            if(localMedia.isPlaying()) {
-                localMedia.stop();
+                } else if (radioButton.getText().equals("Rocket League")) {
+                    if (localMedia.isPlaying()) {
+                        localMedia.stop();
+                    }
+                    localMedia.stop();
+                    localMedia = rocketMedia;
+                    linearbackground.setBackgroundResource(R.drawable.rocket);
+                }
+                localMedia.start();
             }
-            localMedia.stop();
-            localMedia=rocketMedia;
-            linearbackground.setBackgroundResource(R.drawable.rocket);
-        }
-        localMedia.start();
-    }
 
-});
+        });
+
+
+
 
 //Todo: if the the User put null on NumofPlayers Text The app crash;
+
+
 nextBut.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View view) {
 
         String number = numofplayerText.getText().toString();
-        int number1 = Integer.parseInt(number);
-        if (number1 < 9 && number1 > 1) {
-            if (dbzBut.isChecked() && !numofplayerText.getText().toString().isEmpty()) {
-                Game game = new Game(DBZCODE, dbzBut.getText().toString(), number1);
-                Intent intent = new Intent(MainActivity.this, GameActivity.class);
-                Log.v("hey", "hey");
-                intent.putExtra("Game", game);
-                startActivity(intent);
-            } else if (rocketBut.isChecked() && !number.isEmpty()) {
-                Game game = new Game(ROCKETLEAGUECODE, rocketBut.getText().toString(), number1);
-                Intent intent = new Intent(MainActivity.this, GameActivity.class);
-                intent.putExtra("Game", game);
-                startActivity(intent);
+        try {
+            int number1 = Integer.parseInt(number);
+            if (number1 < 9 && number1 > 1 && number != null) {
+                if (dbzBut.isChecked() && !numofplayerText.getText().toString().isEmpty()) {
+                    Game game = new Game(DBZCODE, dbzBut.getText().toString(), number1);
+                    Intent intent = new Intent(MainActivity.this, GameActivity.class);
+                    Log.v("hey", "hey");
+                    intent.putExtra("Game", game);
+                    startActivity(intent);
+                } else if (rocketBut.isChecked() && !number.isEmpty()) {
+                    Game game = new Game(ROCKETLEAGUECODE, rocketBut.getText().toString(), number1);
+                    Intent intent = new Intent(MainActivity.this, GameActivity.class);
+                    intent.putExtra("Game", game);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Choose Game and put players", Toast.LENGTH_LONG).show();
+                }
+
+
             } else {
-                Toast.makeText(getApplicationContext(), "Choose Game and put players", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Put Number Between 2-8", Toast.LENGTH_SHORT).show();
             }
 
-
-        }else{
-            Toast.makeText(MainActivity.this, "Put Number Between 2-8", Toast.LENGTH_SHORT).show();
+        }catch (NumberFormatException e){
+            Toast.makeText(MainActivity.this, "Please Insert Number", Toast.LENGTH_SHORT).show();
         }
-
     }
+
 });
 
     }
-}
+
+    // TODO: 31/01/2018 make and AsynkTask on Changing the songs
+//       class MyTask extends AsyncTask<Void,String,Void> {
+//
+//            private int count = 0;
+//            @Override
+//            protected void onPreExecute() {
+//
+//
+//            }
+//
+//            @Override
+//            protected Void doInBackground(Void... voids) {
+//                return null;
+//            }
+//        }
+//
+        }
 
 

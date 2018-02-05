@@ -8,18 +8,5 @@ import java.util.List;
  */
 
 public class Util {
-    static String names[]={"Choose Name",
-            "Choose Name",
-            "Choose Name",
-            "Choose Name",
-            "Choose Name",
-            "Choose Name",
-            "Choose Name",
-            "Choose Name"
-    };
-    public static List<Player> getListPerson() {
-        List<Player> models = new ArrayList<>();
-        models.add(new Player( names[0]));
-        return models;
-    }
+
 }

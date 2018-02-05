@@ -7,6 +7,10 @@ import java.io.File;
  */
 
 class ImageObj {
+    public ImageObj(File imageFile, int userId) {
+        this.imageFile = imageFile;
+        this.userId = userId;
+    }
 
     private File imageFile;
     private int userId;
