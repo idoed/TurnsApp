@@ -15,7 +15,7 @@
 <FrameLayout
     android:id="@+id/TheGameFrame"
     android:layout_width="match_parent"
-    android:layout_height="470dp"
+    android:layout_height="480dp"
 
     >
 
@@ -24,15 +24,15 @@
     <ImageButton
         android:layout_width="250dp"
         android:layout_height="230dp"
+        android:onClick="onStartGameClicked"
         android:layout_below="@id/TheGameFrame"
         android:layout_alignRight="@id/TheGameFrame"
         android:layout_marginRight="15dp"
-
-       android:scaleType="centerCrop"
+        android:scaleType="centerCrop"
         android:textColor="#87CEFA"
+        android:visibility="visible"
         android:src="@drawable/start_game_but"
         android:id="@+id/startingTheGameBut"
-        android:background="@null"
-        />
+        android:background="@null" />
 
 </android.widget.RelativeLayout>

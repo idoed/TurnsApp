@@ -5,7 +5,7 @@
     android:elevation="4dp"
     android:layout_height="wrap_content"
     android:minHeight="?attr/actionBarSize"
- android:background="#5F9EA0"
+ android:background="#7B68EE"
     >
 
     <ImageView

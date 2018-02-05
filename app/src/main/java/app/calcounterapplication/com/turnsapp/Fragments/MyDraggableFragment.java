@@ -26,27 +26,26 @@ import app.calcounterapplication.com.turnsapp.Model.Player;
 import app.calcounterapplication.com.turnsapp.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class my_dragalble_fragment extends Fragment  {
+public class MyDraggableFragment extends Fragment  {
     private Game game;
 MovingToGameListener movingToGameListener;
     //Array for people names with id's for the draggable list
     public static ArrayList<Pair<Long, String>> mPeopleArray;
-    public static ArrayList<Player> PlayerList;
+    public static ArrayList<Player> PlayerList = new ArrayList<>();
     //Array for Photos with id
     public static ArrayList<Pair<Long, Bitmap>> mPhotosList;
     //Array for checkbox
     public static ArrayList<Boolean> mCheckedArray;
-
+    public static String mPersonName;
     public static ItemDragListAdapter itemDragListAdapter;
 
     private DragListView mDragListView;
     private static boolean pickDateOption;
-    public ImageButton ProfileBut;
+    public CircleImageView ProfileBut;
 public  int numOfPlayers;
     public Bitmap userPhoto;
     View view;
-    public my_dragalble_fragment() {
-    }
+
 
 
 
@@ -139,8 +138,6 @@ public  int numOfPlayers;
         mDragListView.setCustomDragItem(new MyDragItem(getContext(), R.layout.drag_exmpl));
         itemDragListAdapter=listAdapter;
 
-
-
     }
     private static class MyDragItem extends DragItem {
 
@@ -156,34 +153,63 @@ public  int numOfPlayers;
              CircleImageView myImage= (CircleImageView)dragView.findViewById(R.id.profileButtPic);
         }
     }
+public void addingTheList(){
+    for (int i = 0; i <numOfPlayers ; i++) {
 
 
+        String PersonName = mPeopleArray.get(i).toString();
+        //Comparing the index and add Photo for Each player.
+        for (Pair temp : mPhotosList) {
+            if (((Long) temp.first).intValue() == i) {
+                userPhoto = (Bitmap) temp.second;
+            }
+
+        }
+        Player player = new Player(i, PersonName, 0, userPhoto);
+        PlayerList.add(player);
+    }
+    movingToGameListener.CallingPlayerList(PlayerList);
+
+
+}
 
     /**
-     * Chacking if all chackboxes are ok, if yes Creating List OfPlayers.
+     * Checking if all checkboxes are ok, if yes Creating List OfPlayers.
      */
-    public boolean ChackIfGameSet(){
-        boolean Chacker=true;
-        ProfileBut=(ImageButton)view.findViewById(R.id.profileButtPic);
+    public boolean checkIfGameSet(){
+        boolean Checker=true;
+
+        ProfileBut=(CircleImageView)view.findViewById(R.id.profileButtPic);
+
+        Log.v("is it m/e","or is it you?");
         for (int i=0; i<numOfPlayers;i++){
             if(mCheckedArray.get(i)==false){
                 i=numOfPlayers;
                 PlayerList.clear();
-                Chacker=false;
+                Checker=false;
             }else{
-                String PersonName=mPeopleArray.get(i).toString();
-               //Comparing the index and add Photo for Each player.
+                int b=0;
+                for (Pair temp : mPeopleArray) {
+                    if (((Long)temp.first).intValue()==i) {
+                         mPersonName=temp.second.toString();
+                        break;
+                    }
+                    b++;
+                }
+
+                //Comparing the index and add Photo for Each player.
                 for( Pair temp :mPhotosList) {
                     if (((Long) temp.first).intValue() == i) {
                         userPhoto = (Bitmap) temp.second;
                     }
                 }
-                Player player=new Player(i,PersonName,0,userPhoto);
-                PlayerList.add(player);
+                Player player=new Player(i,mPersonName,0,userPhoto);
+                PlayerList.add(player);            }
 
-            }
-            movingToGameListener.CallingPlayerList(PlayerList);
-        }return Chacker;
+        }
+
+        movingToGameListener.CallingPlayerList(PlayerList);
+        return Checker;
     }
 
     /**
@@ -191,7 +217,6 @@ public  int numOfPlayers;
      *
      * @return
      */
-
     /**
      * this is a callback Methood, the Activity Passing the data to this methood and from here stright to adapter.
      *
@@ -220,7 +245,6 @@ public  int numOfPlayers;
     public interface MovingToGameListener
     {
         public void CallingPlayerList(ArrayList<Player> list);
-//        public void ChackIfGameSet(ArrayList<Pair<Long, Bitmap>> ph)
     }
 
 }

@@ -30,14 +30,14 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import app.calcounterapplication.com.turnsapp.Fragments.my_dragalble_fragment;
+import app.calcounterapplication.com.turnsapp.Fragments.MyDraggableFragment;
 import app.calcounterapplication.com.turnsapp.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
-import static app.calcounterapplication.com.turnsapp.Fragments.my_dragalble_fragment.mCheckedArray;
-import static app.calcounterapplication.com.turnsapp.Fragments.my_dragalble_fragment.mPeopleArray;
-import static app.calcounterapplication.com.turnsapp.Fragments.my_dragalble_fragment.mPhotosList;
+import static app.calcounterapplication.com.turnsapp.Fragments.MyDraggableFragment.mCheckedArray;
+import static app.calcounterapplication.com.turnsapp.Fragments.MyDraggableFragment.mPeopleArray;
+import static app.calcounterapplication.com.turnsapp.Fragments.MyDraggableFragment.mPhotosList;
 
 public class ItemDragListAdapter extends DragItemAdapter<Pair<Long, String>, ItemDragListAdapter.ViewHolder> implements OnActivityResult{
 
@@ -46,7 +46,7 @@ public class ItemDragListAdapter extends DragItemAdapter<Pair<Long, String>, Ite
     int ClassCount = 0;
     static int StaticClassCount = 0;
 //    public ImageButton myImage;
-    public my_dragalble_fragment myDrag=new my_dragalble_fragment();
+    public MyDraggableFragment myDrag=new MyDraggableFragment();
 
     public static final int IMAGE_GALLARY_REQUEST = 20,REQUEST_CAMERA=1;;
     private int mLayoutId;
@@ -278,7 +278,13 @@ public static int PositionOfPicture;
                             i++;
                         }
                         //Sets the currently being added checkbox in final array
-                        mCheckedArray.set(i, isChecked);
+                        try {
+                            mCheckedArray.set(i, isChecked);
+                        }
+                        catch (IndexOutOfBoundsException e)  {
+                            Log.v("INDEx out of Bounds except","itemDragList");
+
+                        }
                     }
 
                 }
